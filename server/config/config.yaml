@@ -1,0 +1,22 @@
+server:
+  port: 8080
+  mode: development  # development/production
+  log_path: ./logs
+
+database:
+  host: 172.25.13.23
+  port: 3306
+  username: root
+  password: 123
+  dbname: personal_blog
+  charset: utf8mb4
+
+redis:
+  host: 172.25.13.23
+  port: 6379
+  password: "123"
+  db: 0
+
+jwt:
+  secret: "your-secret-key"
+  expire_time: 24  # hours
