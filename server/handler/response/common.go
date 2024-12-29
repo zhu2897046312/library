@@ -1,6 +1,7 @@
 package response
 
 // Response represents common API response
+// @Description API通用响应结构
 type Response struct {
 	Code int         `json:"code"`    // HTTP状态码
 	Msg  string      `json:"msg"`     // 响应消息
@@ -8,6 +9,7 @@ type Response struct {
 }
 
 // PaginationData represents pagination information
+// @Description 分页数据结构
 type PaginationData struct {
 	Total    int64       `json:"total"`     // 总数
 	Page     int         `json:"page"`      // 当前页码

@@ -32,11 +32,14 @@ func (r *reviewRepository) Transaction(fc func(tx *gorm.DB) error) error {
 
 // Create 创建评论
 func (r *reviewRepository) Create(review *model.Review) error {
+	review.CreatedAt = r.db.NowFunc()
+	review.UpdatedAt = r.db.NowFunc()
 	return r.db.Create(review).Error
 }
 
 // Update 更新评论
 func (r *reviewRepository) Update(review *model.Review) error {
+	review.UpdatedAt = r.db.NowFunc()
 	return r.db.Model(review).Updates(review).Error
 }
 

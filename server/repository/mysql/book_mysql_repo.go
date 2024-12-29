@@ -32,11 +32,14 @@ func (r *bookRepository) Transaction(fc func(tx *gorm.DB) error) error {
 
 // Create 创建图书
 func (r *bookRepository) Create( book *model.Book) error {
+	book.CreatedAt = r.db.NowFunc()
+	book.UpdatedAt = r.db.NowFunc()
 	return r.db.Create(book).Error
 }
 
 // Update 更新图书信息
 func (r *bookRepository) Update( book *model.Book) error {
+	book.UpdatedAt = r.db.NowFunc()
 	return r.db.Updates(book).Error
 }
 

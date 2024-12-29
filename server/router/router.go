@@ -1,11 +1,34 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
+	_ "library/docs" // 导入 swagger docs
 	"library/handler"
 	"library/middleware"
 	"library/service"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title Library Management System API
+// @version 1.0
+// @description 图书馆管理系统API文档
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /api/v1
+
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 // SetupRouter initializes the router and sets up all routes
 func SetupRouter(factory service.Factory) *gin.Engine {
@@ -13,6 +36,9 @@ func SetupRouter(factory service.Factory) *gin.Engine {
 
 	// Add middleware
 	r.Use(middleware.CORSMiddleware())
+
+	// Swagger documentation
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Create handlers
 	userHandler := handler.NewUserHandler(factory.GetUserService())
@@ -70,6 +96,10 @@ func SetupRouter(factory service.Factory) *gin.Engine {
 				auth.POST("", borrowHandler.BorrowBook)
 				auth.POST("/return", borrowHandler.ReturnBook)
 			}
+			admin := auth.Use(middleware.AdminAuthMiddleware())
+			{
+				admin.PUT("/:id", borrowHandler.UpdateBorrow)
+			}
 		}
 
 		// Review routes
@@ -90,6 +120,9 @@ func SetupRouter(factory service.Factory) *gin.Engine {
 				}
 			}
 		}
+
+
+
 	}
 
 	return r

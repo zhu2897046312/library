@@ -45,9 +45,10 @@ func (h *BorrowHandler) adminCheck(c *gin.Context) bool {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request body request.CreateBorrowRequest true "借阅信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/borrows [post]
+// @Router /borrows [post]
 func (h *BorrowHandler) BorrowBook(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -74,9 +75,10 @@ func (h *BorrowHandler) BorrowBook(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request body request.ReturnBookRequest true "归还信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/borrows/return [post]
+// @Router /borrows/return [post]
 func (h *BorrowHandler) ReturnBook(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -103,9 +105,10 @@ func (h *BorrowHandler) ReturnBook(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "借阅ID"
 // @Success 200 {object} response.Response
-// @Router /api/v1/borrows/{id} [get]
+// @Router /borrows/{id} [get]
 func (h *BorrowHandler) GetBorrow(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -139,9 +142,10 @@ func (h *BorrowHandler) GetBorrow(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request query request.BorrowSearchRequest true "搜索条件"
 // @Success 200 {object} response.Response
-// @Router /api/v1/borrows [get]
+// @Router /borrows [get]
 func (h *BorrowHandler) ListBorrows(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -181,15 +185,16 @@ func (h *BorrowHandler) ListBorrows(c *gin.Context) {
 
 // UpdateBorrow 更新借阅信息（管理员接口）
 // @Summary 更新借阅信息
-// @Description 管理员更新借阅记录信息
+// @Description 管理员更新借阅记录信息 4-已取消 1-借阅中 2-已归还 3-已逾期
 // @Tags 借阅管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "借阅ID"
 // @Param request body request.UpdateBorrowRequest true "借阅信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/borrows/{id} [put]
+// @Router /borrows/{id} [put]
 func (h *BorrowHandler) UpdateBorrow(c *gin.Context) {
 	if !h.adminCheck(c) {
 		return

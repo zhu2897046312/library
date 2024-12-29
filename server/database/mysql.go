@@ -9,6 +9,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"library/model"
+
 	"library/config"
 )
 
@@ -62,11 +64,10 @@ func InitMySQL() error {
 // autoMigrate 自动迁移数据库表
 func autoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(
-		// &models.User{},
-		// &models.Post{},
-		// &models.Category{},
-		// &models.Tag{},
-		// &models.Comment{},
+		&model.User{},
+		&model.Book{},
+		&model.Borrow{},
+		&model.Review{},
 	)
 }
 

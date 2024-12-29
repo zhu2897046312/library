@@ -34,11 +34,15 @@ func (r *borrowRepository) Transaction(fc func(tx *gorm.DB) error) error {
 
 // Create 创建借阅记录
 func (r *borrowRepository) Create( borrow *model.Borrow) error {
+	borrow.CreatedAt = r.db.NowFunc()
+	borrow.UpdatedAt = r.db.NowFunc()
+	borrow.ReturnDate = r.db.NowFunc()
 	return r.db.Create(borrow).Error
 }
 
 // Update 更新借阅记录
 func (r *borrowRepository) Update( borrow *model.Borrow) error {
+	borrow.UpdatedAt = r.db.NowFunc()
 	return r.db.Updates(borrow).Error
 }
 

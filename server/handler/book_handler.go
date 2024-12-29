@@ -6,6 +6,9 @@ import (
 	"library/model"
 	"library/service"
 	"net/http"
+	"time"
+
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,16 +32,29 @@ func (h *BookHandler) authMiddleware(c *gin.Context) {
 	}
 }
 
-// CreateBook 创建图书
+// CreateBook 创建图书 （管理员接口）
 // @Summary 创建新图书
-// @Description 管理员创建新图书
+// @Description 管理员创建新图书，包含ISBN、书名、作者等基本信息
 // @Tags 图书管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request body request.CreateBookRequest true "图书信息"
-// @Success 200 {object} response.Response
-// @Router /api/v1/admin/books [post]
+// @Success 200 {object} response.Response{data=model.Book} "成功创建图书"
+// @Failure 400 {object} response.Response "请求参数错误"
+// @Failure 403 {object} response.Response "权限不足"
+// @Failure 500 {object} response.Response "服务器内部错误"
+// @Example {json} Request-Example:
+//  {
+//    "isbn": "9787111111111",
+//    "title": "Go语言实战",
+//    "author": "张三",
+//    "publisher": "机械工业出版社",
+//    "publish_date": "2023-01-01",
+//    "description": "这是一本Go语言编程的入门书籍"
+//  }
+// @Router /books [post]
 func (h *BookHandler) CreateBook(c *gin.Context) {
 	h.authMiddleware(c)
 	var req request.CreateBookRequest
@@ -61,6 +77,8 @@ func (h *BookHandler) CreateBook(c *gin.Context) {
 		Status:    1, // 默认上架
 	}
 
+	book.CreatedAt = time.Now()
+
 	if err := h.bookService.CreateBook( book); err != nil {
 		c.JSON(http.StatusInternalServerError, response.NewResponse(http.StatusInternalServerError, err.Error(), nil))
 		return
@@ -69,17 +87,18 @@ func (h *BookHandler) CreateBook(c *gin.Context) {
 	c.JSON(http.StatusOK, response.NewResponse(http.StatusOK, "Book created successfully", book))
 }
 
-// UpdateBook 更新图书信息
+// UpdateBook 更新图书信息 （管理员接口）
 // @Summary 更新图书信息
 // @Description 管理员更新图书信息
 // @Tags 图书管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "图书ID"
 // @Param request body request.UpdateBookRequest true "图书信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/books/{id} [put]
+// @Router /books/{id} [put]
 func (h *BookHandler) UpdateBook(c *gin.Context) {
 	h.authMiddleware(c)
 	var uri request.IDRequest
@@ -143,9 +162,11 @@ func (h *BookHandler) UpdateBook(c *gin.Context) {
 // @Tags 图书管理
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "图书ID"
 // @Success 200 {object} response.Response
-// @Router /api/v1/books/{id} [get]
+// @Router /books/{id} [get]
 func (h *BookHandler) GetBook(c *gin.Context) {
 	var uri request.IDRequest
 	if err := c.ShouldBindUri(&uri); err != nil {
@@ -168,9 +189,11 @@ func (h *BookHandler) GetBook(c *gin.Context) {
 // @Tags 图书管理
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request query request.BookSearchRequest true "搜索条件"
 // @Success 200 {object} response.Response
-// @Router /api/v1/books [get]
+// @Router /books [get]
 func (h *BookHandler) ListBooks(c *gin.Context) {
 	var req request.BookSearchRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -198,17 +221,18 @@ func (h *BookHandler) ListBooks(c *gin.Context) {
 	}))
 }
 
-// UpdateBookStatus 更新图书状态
+// UpdateBookStatus 更新图书状态 （管理员接口）
 // @Summary 更新图书状态
-// @Description 管理员更新图书上下架状态
+// @Description 管理员更新图书上下架状态 2-下架 1-上架
 // @Tags 图书管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "图书ID"
 // @Param request body request.StatusRequest true "状态信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/books/{id}/status [put]
+// @Router /books/{id}/status [put]
 func (h *BookHandler) UpdateBookStatus(c *gin.Context) {
 	h.authMiddleware(c)
 	var uri request.IDRequest
@@ -223,6 +247,8 @@ func (h *BookHandler) UpdateBookStatus(c *gin.Context) {
 		return
 	}
 
+	log.Println(req)
+
 	if err := h.bookService.UpdateBookStatus( uri.ID, req.Status); err != nil {
 		c.JSON(http.StatusInternalServerError, response.NewResponse(http.StatusInternalServerError, err.Error(), nil))
 		return
@@ -231,17 +257,18 @@ func (h *BookHandler) UpdateBookStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, response.NewResponse(http.StatusOK, "Book status updated successfully", nil))
 }
 
-// UpdateBookStock 更新图书库存
+// UpdateBookStock 更新图书库存 （管理员接口）
 // @Summary 更新图书库存
 // @Description 管理员更新图书库存数量
 // @Tags 图书管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "图书ID"
 // @Param request body request.UpdateBookStockRequest true "库存信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/books/{id}/stock [put]
+// @Router /books/{id}/stock [put]
 func (h *BookHandler) UpdateBookStock(c *gin.Context) {
 	h.authMiddleware(c)
 	var uri request.IDRequest

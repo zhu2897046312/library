@@ -82,7 +82,7 @@ func (s *userService) Login(username, password string) (*model.User, error) {
 
 		// 更新最后登录时间
 		user.LastLoginAt = time.Now()
-		if err := s.userRepo.Update( user); err != nil {
+		if err := s.userRepo.Update(user); err != nil {
 			return fmt.Errorf("update last login time: %w", err)
 		}
 

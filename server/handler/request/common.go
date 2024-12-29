@@ -19,8 +19,15 @@ type IDRequest struct {
 
 // StatusRequest 状态更新的通用结构
 type StatusRequest struct {
-	Status int `json:"status" binding:"required,oneof=0 1"` // 0:禁用 1:启用
+	Status int `json:"status" ` // 2:禁用 1:启用
 }
+
+/**
+user - status 	状态 2-禁用 1-启用
+book - status 	状态 2-下架 1-上架
+review - status 状态 2-隐藏 1-显示
+borrow - status 状态 4-已取消 1-借阅中 2-已归还 3-已逾期
+*/
 
 // SortRequest 排序的通用结构
 type SortRequest struct {

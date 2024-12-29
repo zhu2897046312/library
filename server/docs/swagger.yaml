@@ -1,0 +1,1267 @@
+basePath: /api/v1
+definitions:
+  model.Book:
+    description: 图书信息
+    properties:
+      author:
+        description: 作者
+        type: string
+      available:
+        description: 可借数量
+        type: integer
+      category:
+        description: 分类
+        type: string
+      cover:
+        description: 封面图片URL
+        type: string
+      created_at:
+        description: 创建时间
+        type: string
+      deleted_at:
+        description: 删除时间
+        example: "2024-01-01T00:00:00+08:00"
+        format: date-time
+        type: string
+      id:
+        description: bookID
+        type: integer
+      isbn:
+        description: ISBN编号
+        type: string
+      location:
+        description: 馆藏位置
+        type: string
+      price:
+        description: 价格
+        type: number
+      publisher:
+        description: 出版社
+        type: string
+      status:
+        description: 状态 2-下架 1-上架
+        type: integer
+      summary:
+        description: 简介
+        type: string
+      title:
+        description: 书名
+        type: string
+      total:
+        description: 总数量
+        type: integer
+      updated_at:
+        description: 更新时间
+        type: string
+    type: object
+  request.ChangePasswordRequest:
+    description: 修改密码请求参数
+    properties:
+      new_password:
+        description: 新密码(6-32个字符，不能与旧密码相同)
+        example: newpassword123
+        maxLength: 32
+        minLength: 6
+        type: string
+      old_password:
+        description: 旧密码(6-32个字符)
+        example: password123
+        maxLength: 32
+        minLength: 6
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  request.CreateBookRequest:
+    description: 创建新图书的请求参数
+    properties:
+      author:
+        example: J.D. Salinger
+        maxLength: 64
+        minLength: 1
+        type: string
+      category:
+        example: Fiction
+        maxLength: 32
+        minLength: 1
+        type: string
+      cover:
+        example: https://example.com/cover.jpg
+        type: string
+      isbn:
+        example: "9787111111111"
+        maxLength: 13
+        minLength: 10
+        type: string
+      location:
+        example: Shelf A1
+        maxLength: 32
+        minLength: 1
+        type: string
+      price:
+        example: 10
+        minimum: 0
+        type: number
+      publisher:
+        example: Little, Brown and Company
+        maxLength: 64
+        minLength: 1
+        type: string
+      summary:
+        example: This is a great book about life and love.
+        maxLength: 1000
+        type: string
+      title:
+        example: The Catcher in the Rye
+        maxLength: 128
+        minLength: 1
+        type: string
+      total:
+        example: 100
+        minimum: 1
+        type: integer
+    required:
+    - author
+    - category
+    - isbn
+    - location
+    - price
+    - publisher
+    - title
+    - total
+    type: object
+  request.CreateBorrowRequest:
+    properties:
+      book_id:
+        example: 1
+        minimum: 1
+        type: integer
+      due_date:
+        description: 应还日期必须大于借阅日期
+        example: "2024-01-01T00:00:00+08:00"
+        type: string
+      remark:
+        example: 请尽快归还
+        maxLength: 256
+        type: string
+    required:
+    - book_id
+    - due_date
+    type: object
+  request.CreateReviewRequest:
+    properties:
+      book_id:
+        example: 1
+        minimum: 1
+        type: integer
+      content:
+        example: This book is great!
+        maxLength: 1000
+        minLength: 1
+        type: string
+      rating:
+        example: 5
+        maximum: 5
+        minimum: 1
+        type: integer
+    required:
+    - book_id
+    - content
+    - rating
+    type: object
+  request.LoginRequest:
+    description: 用户登录请求参数
+    properties:
+      password:
+        description: 密码(6-32个字符)
+        example: password123
+        maxLength: 32
+        minLength: 6
+        type: string
+      username:
+        description: 用户名(3-32个字符)
+        example: zhangsan
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  request.RegisterRequest:
+    description: 用户注册请求参数
+    properties:
+      email:
+        description: 邮箱地址
+        example: zhangsan@example.com
+        type: string
+      nickname:
+        description: 昵称(2-32个字符)
+        example: 张三
+        maxLength: 32
+        minLength: 2
+        type: string
+      password:
+        description: 密码(6-32个字符)
+        example: password123
+        maxLength: 32
+        minLength: 6
+        type: string
+      phone:
+        description: 手机号(11位)
+        example: "13800138000"
+        type: string
+      role:
+        description: 角色(user/admin)
+        enum:
+        - user
+        - admin
+        example: user
+        type: string
+      username:
+        description: 用户名(3-32个字符)
+        example: zhangsan
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - role
+    - username
+    type: object
+  request.ReturnBookRequest:
+    properties:
+      borrow_id:
+        example: 1
+        minimum: 1
+        type: integer
+      fine:
+        example: 10
+        minimum: 0
+        type: number
+      remark:
+        example: 请尽快归还
+        maxLength: 256
+        type: string
+    required:
+    - borrow_id
+    type: object
+  request.StatusRequest:
+    properties:
+      status:
+        description: 2:禁用 1:启用
+        type: integer
+    type: object
+  request.UpdateBookRequest:
+    description: 更新图书信息的请求参数
+    properties:
+      author:
+        example: J.D. Salinger
+        maxLength: 64
+        minLength: 1
+        type: string
+      category:
+        example: Fiction
+        maxLength: 32
+        minLength: 1
+        type: string
+      cover:
+        example: https://example.com/cover.jpg
+        type: string
+      location:
+        example: Shelf A1
+        maxLength: 32
+        minLength: 1
+        type: string
+      price:
+        example: 10
+        minimum: 0
+        type: number
+      publisher:
+        example: Little, Brown and Company
+        maxLength: 64
+        minLength: 1
+        type: string
+      summary:
+        example: This is a great book about life and love.
+        maxLength: 1000
+        type: string
+      title:
+        example: The Catcher in the Rye
+        maxLength: 128
+        minLength: 1
+        type: string
+      total:
+        example: 100
+        minimum: 0
+        type: integer
+    type: object
+  request.UpdateBookStockRequest:
+    description: 更新图书库存的请求参数
+    properties:
+      change:
+        description: 可以为负数，表示减少库存
+        example: 10
+        type: integer
+    required:
+    - change
+    type: object
+  request.UpdateBorrowRequest:
+    properties:
+      due_date:
+        example: "2024-01-01T00:00:00+08:00"
+        type: string
+      fine:
+        example: 10
+        minimum: 0
+        type: number
+      remark:
+        example: 请尽快归还
+        maxLength: 256
+        type: string
+      status:
+        description: 0-已取消 1-借阅中 2-已归还 3-已逾期
+        enum:
+        - 0
+        - 1
+        - 2
+        - 3
+        example: 1
+        type: integer
+    required:
+    - due_date
+    - status
+    type: object
+  request.UpdateReviewRequest:
+    properties:
+      content:
+        example: This book is great!
+        maxLength: 1000
+        minLength: 1
+        type: string
+      rating:
+        example: 5
+        maximum: 5
+        minimum: 1
+        type: integer
+    required:
+    - content
+    - rating
+    type: object
+  request.UpdateUserRequest:
+    description: 更新用户信息请求参数
+    properties:
+      email:
+        description: 邮箱地址
+        example: zhangsan@example.com
+        type: string
+      nickname:
+        description: 昵称(2-32个字符)
+        example: 张三
+        maxLength: 32
+        minLength: 2
+        type: string
+      phone:
+        description: 手机号(11位)
+        example: "13800138000"
+        type: string
+    type: object
+  request.UpdateUserRoleRequest:
+    description: 更新用户角色请求参数
+    properties:
+      role:
+        description: user-普通用户 admin-管理员
+        enum:
+        - user
+        - admin
+        example: user
+        type: string
+    required:
+    - role
+    type: object
+  response.Response:
+    description: API通用响应结构
+    properties:
+      code:
+        description: HTTP状态码
+        type: integer
+      data:
+        description: 响应数据
+      msg:
+        description: 响应消息
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: 图书馆管理系统API文档
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Library Management System API
+  version: "1.0"
+paths:
+  /books:
+    get:
+      consumes:
+      - application/json
+      description: 根据条件搜索图书
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 'true: 只显示可借阅的图书'
+        example: true
+        in: query
+        name: available
+        type: boolean
+      - example: Fiction
+        in: query
+        maxLength: 32
+        minLength: 1
+        name: category
+        type: string
+      - in: query
+        minLength: 1
+        name: keyword
+        type: string
+      - example: 20
+        in: query
+        minimum: 0
+        name: max_price
+        type: number
+      - example: 10
+        in: query
+        minimum: 0
+        name: min_price
+        type: number
+      - in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        required: true
+        type: integer
+      - enum:
+        - 0
+        - 1
+        example: 0
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取图书列表
+      tags:
+      - 图书管理
+    post:
+      consumes:
+      - application/json
+      description: 管理员创建新图书，包含ISBN、书名、作者等基本信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图书信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功创建图书
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Book'
+              type: object
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/response.Response'
+        "403":
+          description: 权限不足
+          schema:
+            $ref: '#/definitions/response.Response'
+        "500":
+          description: 服务器内部错误
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建新图书
+      tags:
+      - 图书管理
+  /books/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定图书的详细信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图书ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取图书详情
+      tags:
+      - 图书管理
+    put:
+      consumes:
+      - application/json
+      description: 管理员更新图书信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图书ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 图书信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新图书信息
+      tags:
+      - 图书管理
+  /books/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: 管理员更新图书上下架状态 2-下架 1-上架
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图书ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 状态信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.StatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新图书状态
+      tags:
+      - 图书管理
+  /books/{id}/stock:
+    put:
+      consumes:
+      - application/json
+      description: 管理员更新图书库存数量
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图书ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 库存信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateBookStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新图书库存
+      tags:
+      - 图书管理
+  /borrows:
+    get:
+      consumes:
+      - application/json
+      description: 根据条件搜索借阅记录
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - example: 1
+        in: query
+        minimum: 1
+        name: book_id
+        type: integer
+      - example: "2024-01-01T00:00:00+08:00"
+        in: query
+        name: end_time
+        type: string
+      - in: query
+        minLength: 1
+        name: keyword
+        type: string
+      - in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        required: true
+        type: integer
+      - example: "2024-01-01T00:00:00+08:00"
+        in: query
+        name: start_time
+        type: string
+      - collectionFormat: csv
+        example:
+        - 1
+        in: query
+        items:
+          type: integer
+        name: status
+        type: array
+      - example: 1
+        in: query
+        minimum: 1
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取借阅列表
+      tags:
+      - 借阅管理
+    post:
+      consumes:
+      - application/json
+      description: 用户借阅图书
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 借阅信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateBorrowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 借阅图书
+      tags:
+      - 借阅管理
+  /borrows/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定借阅记录的详细信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 借阅ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取借阅详情
+      tags:
+      - 借阅管理
+    put:
+      consumes:
+      - application/json
+      description: 管理员更新借阅记录信息 4-已取消 1-借阅中 2-已归还 3-已逾期
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 借阅ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 借阅信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateBorrowRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新借阅信息
+      tags:
+      - 借阅管理
+  /borrows/return:
+    post:
+      consumes:
+      - application/json
+      description: 用户归还图书
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 归还信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.ReturnBookRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 归还图书
+      tags:
+      - 借阅管理
+  /reviews:
+    get:
+      consumes:
+      - application/json
+      description: 根据条件搜索评论
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - example: 1
+        in: query
+        minimum: 1
+        name: book_id
+        type: integer
+      - in: query
+        minLength: 1
+        name: keyword
+        type: string
+      - enum:
+        - rating
+        - created_at
+        example: rating
+        in: query
+        name: order_by
+        type: string
+      - in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        required: true
+        type: integer
+      - example: 5
+        in: query
+        maximum: 5
+        minimum: 1
+        name: rating
+        type: integer
+      - enum:
+        - 0
+        - 1
+        example: 0
+        in: query
+        name: status
+        type: integer
+      - example: 1
+        in: query
+        minimum: 1
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取评论列表
+      tags:
+      - 评论管理
+    post:
+      consumes:
+      - application/json
+      description: 用户创建图书评论
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 评论信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.CreateReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建评论
+      tags:
+      - 评论管理
+  /reviews/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 用户删除自己的评论
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 评论ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除评论
+      tags:
+      - 评论管理
+    get:
+      consumes:
+      - application/json
+      description: 获取指定评论的详细信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 评论ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取评论详情
+      tags:
+      - 评论管理
+    put:
+      consumes:
+      - application/json
+      description: 用户更新自己的评论
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 评论ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 评论信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新评论
+      tags:
+      - 评论管理
+  /reviews/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: 管理员更新评论显示状态 2 隐藏 or 1 显示
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 评论ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 状态信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.StatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新评论状态
+      tags:
+      - 评论管理
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: 管理员获取用户列表
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        minLength: 1
+        name: keyword
+        type: string
+      - in: query
+        minimum: 1
+        name: page
+        required: true
+        type: integer
+      - in: query
+        maximum: 100
+        minimum: 1
+        name: page_size
+        required: true
+        type: integer
+      - description: 0-普通用户 1-管理员
+        enum:
+        - 0
+        - 1
+        example: 0
+        in: query
+        name: role
+        type: integer
+      - description: 0-正常 1-禁用
+        enum:
+        - 0
+        - 1
+        example: 0
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户列表
+      tags:
+      - 用户管理
+  /users/{id}/role:
+    put:
+      consumes:
+      - application/json
+      description: 管理员更新用户角色 "user" or "admin"
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 角色信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户角色
+      tags:
+      - 用户管理
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户登录并获取token
+      parameters:
+      - description: 登录信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 用户登录
+      tags:
+      - 用户管理
+  /users/password:
+    put:
+      consumes:
+      - application/json
+      description: 修改当前登录用户的密码
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 密码信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.ChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 修改密码
+      tags:
+      - 用户管理
+  /users/profile:
+    get:
+      consumes:
+      - application/json
+      description: 获取当前登录用户的详细信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户信息
+      tags:
+      - 用户管理
+    put:
+      consumes:
+      - application/json
+      description: 更新当前登录用户的信息
+      parameters:
+      - description: Bearer 用户的访问令牌
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户信息
+      tags:
+      - 用户管理
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: 创建新用户账号
+      parameters:
+      - description: 注册信息
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.Response'
+      summary: 用户注册
+      tags:
+      - 用户管理
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

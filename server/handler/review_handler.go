@@ -36,9 +36,10 @@ func (h *ReviewHandler) authCheck(c *gin.Context) (uint, bool) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request body request.CreateReviewRequest true "评论信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/reviews [post]
+// @Router /reviews [post]
 func (h *ReviewHandler) CreateReview(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -73,10 +74,11 @@ func (h *ReviewHandler) CreateReview(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "评论ID"
 // @Param request body request.UpdateReviewRequest true "评论信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/reviews/{id} [put]
+// @Router /reviews/{id} [put]
 func (h *ReviewHandler) UpdateReview(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -125,9 +127,10 @@ func (h *ReviewHandler) UpdateReview(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "评论ID"
 // @Success 200 {object} response.Response
-// @Router /api/v1/reviews/{id} [delete]
+// @Router /reviews/{id} [delete]
 func (h *ReviewHandler) DeleteReview(c *gin.Context) {
 	userID, ok := h.authCheck(c)
 	if !ok {
@@ -166,9 +169,11 @@ func (h *ReviewHandler) DeleteReview(c *gin.Context) {
 // @Tags 评论管理
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "评论ID"
 // @Success 200 {object} response.Response
-// @Router /api/v1/reviews/{id} [get]
+// @Router /reviews/{id} [get]
 func (h *ReviewHandler) GetReview(c *gin.Context) {
 	var uri request.IDRequest
 	if err := c.ShouldBindUri(&uri); err != nil {
@@ -191,9 +196,11 @@ func (h *ReviewHandler) GetReview(c *gin.Context) {
 // @Tags 评论管理
 // @Accept json
 // @Produce json
+// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request query request.ReviewSearchRequest true "搜索条件"
 // @Success 200 {object} response.Response
-// @Router /api/v1/reviews [get]
+// @Router /reviews [get]
 func (h *ReviewHandler) ListReviews(c *gin.Context) {
 	var req request.ReviewSearchRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -223,15 +230,16 @@ func (h *ReviewHandler) ListReviews(c *gin.Context) {
 
 // UpdateReviewStatus 更新评论状态（管理员接口）
 // @Summary 更新评论状态
-// @Description 管理员更新评论显示状态
+// @Description 管理员更新评论显示状态 2 隐藏 or 1 显示
 // @Tags 评论管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "评论ID"
 // @Param request body request.StatusRequest true "状态信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/reviews/{id}/status [put]
+// @Router /reviews/{id}/status [put]
 func (h *ReviewHandler) UpdateReviewStatus(c *gin.Context) {
 	_, ok := h.authCheck(c)
 	if !ok {

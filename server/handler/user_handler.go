@@ -29,7 +29,7 @@ func NewUserHandler(userService service.UserServiceInterface) *UserHandler {
 // @Produce json
 // @Param request body request.RegisterRequest true "注册信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/users/register [post]
+// @Router /users/register [post]
 func (h *UserHandler) Register(c *gin.Context) {
 	var req request.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -54,7 +54,7 @@ func (h *UserHandler) Register(c *gin.Context) {
 // @Produce json
 // @Param request body request.LoginRequest true "登录信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/users/login [post]
+// @Router /users/login [post]
 func (h *UserHandler) Login(c *gin.Context) {
 	var req request.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -88,8 +88,9 @@ func (h *UserHandler) Login(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Success 200 {object} response.Response
-// @Router /api/v1/users/profile [get]
+// @Router /users/profile [get]
 func (h *UserHandler) GetProfile(c *gin.Context) {
 	userID, exists := c.Get("userID")
 	if !exists {
@@ -113,9 +114,10 @@ func (h *UserHandler) GetProfile(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request body request.UpdateUserRequest true "用户信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/users/profile [put]
+// @Router /users/profile [put]
 func (h *UserHandler) UpdateProfile(c *gin.Context) {
 	var req request.UpdateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -156,9 +158,10 @@ func (h *UserHandler) UpdateProfile(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request body request.ChangePasswordRequest true "密码信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/users/password [put]
+// @Router /users/password [put]
 func (h *UserHandler) ChangePassword(c *gin.Context) {
 	var req request.ChangePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -182,9 +185,10 @@ func (h *UserHandler) ChangePassword(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param request query request.UserSearchRequest true "搜索条件"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/users [get]
+// @Router /users [get]
 func (h *UserHandler) ListUsers(c *gin.Context) {
 	var req request.UserSearchRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
@@ -210,15 +214,16 @@ func (h *UserHandler) ListUsers(c *gin.Context) {
 
 // UpdateUserRole 更新用户角色（管理员接口）
 // @Summary 更新用户角色
-// @Description 管理员更新用户角色
+// @Description 管理员更新用户角色 "user" or "admin"
 // @Tags 用户管理
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer 用户的访问令牌"
 // @Param id path int true "用户ID"
 // @Param request body request.UpdateUserRoleRequest true "角色信息"
 // @Success 200 {object} response.Response
-// @Router /api/v1/admin/users/{id}/role [put]
+// @Router /users/{id}/role [put]
 func (h *UserHandler) UpdateUserRole(c *gin.Context) {
 	var uri request.IDRequest
 	if err := c.ShouldBindUri(&uri); err != nil {

@@ -27,12 +27,16 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 }
 
 // Create 创建用户
-func (r *userRepository) Create(user *model.User) error {
+func (r *userRepository) Create(user *model.User) error {	
+	user.CreatedAt = r.db.NowFunc()
+	user.UpdatedAt = r.db.NowFunc()
+	user.LastLoginAt = r.db.NowFunc()
 	return r.db.Create(user).Error
 }
 
 // Update 更新用户信息
 func (r *userRepository) Update(user *model.User) error {
+	user.UpdatedAt = r.db.NowFunc()
 	return r.db.Model(user).Updates(user).Error
 }
 
